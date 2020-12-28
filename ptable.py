@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from typing import Text
 import requests
 from bs4 import BeautifulSoup
