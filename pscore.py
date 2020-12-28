@@ -39,6 +39,7 @@ driver.get(URL[league])
 # sleep(2)
 html = driver.execute_script(
     "return document.getElementsByTagName('html')[0].innerHTML")
+driver.quit()
 soup = BeautifulSoup(html, 'html5lib')
 teams = soup.findAll('span',attrs={'class':'abbrev'})
 
