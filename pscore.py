@@ -32,8 +32,7 @@ n = notify2.Notification(None, icon=ICON_PATH)
 n.set_urgency(notify2.URGENCY_NORMAL)
 
 # set timeout for a notification
-n.set_timeout(5000)
-
+n.set_timeout(10000)
 
 # URL for different leagues
 URL = {"epl": "https://www.espn.in/football/scoreboard/_/league/eng.1",
@@ -83,6 +82,17 @@ while True:
         if score == '':
             score = '0'
         scores.append(score)
+
+    game_times_html = soup.findAll('span', attrs={'class': 'game-time'})
+    game_times = []
+    for game_html in game_times_html:
+        game_times.append(game_html.text.strip())
+    # print(game_times)
+    checkcnt=0
+    for gtime in game_times:
+        if gtime=='FT' or gtime=='HT' or gtime[-1]=='M':
+            checkcnt+=1
+
     # print(scores)
     scores = [scores[i * 2:(i + 1) * 2]
               for i in range((len(scores) + 2 - 1) // 2)]
@@ -95,7 +105,7 @@ while True:
 
     for i in range(len(names)):
         print(colored(f'{names[i][0]}\t{scores[i][0]}', 'yellow'), " - ",
-              colored(f'{scores[i][1]}    {names[i][1]}', 'magenta'))
+              colored(f'{scores[i][1]}    {names[i][1]}', 'magenta'),f'{game_times[i]}')
 
     # Notifications for Goals
     if iteration > 0:
@@ -122,6 +132,10 @@ while True:
     print("Results rendered in", endtime-starttime,
           "seconds!\nUpdating after 10 seconds")
     print(colored(".......", "green"))
+    if checkcnt==len(game_times):
+        n.update("Live Football","All Matches are currently either HT or FT or yet to begin")
+        n.show()
+        break
     sleep(10)
     os.system('clear')
     iteration += 1
